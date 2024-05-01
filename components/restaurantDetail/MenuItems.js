@@ -27,6 +27,18 @@ const foods = [
         description: "Decadent chocolate brownie served warm with a scoop of vanilla ice cream and drizzled with chocolate sauce.",
         price: "$14.99",
         image: "https://recipesblob.oetker.in/assets/0e7149831748458c9502e361e889f726/964x526/brownie-with-vanilla-ice-cream.jpg"
+    },
+    {
+        title: "Iced Tea",
+        description: "Chilled black tea sweetened with a hint of sugar and served over ice.",
+        price: "$3.99",
+        image: "https://res.cloudinary.com/purnesh/image/upload/w_540,f_auto,q_auto:eco,c_limit/2020-02-12-1.jpg"
+    },
+    {
+        title: "Margarita Cocktail",
+        description: "Classic cocktail made with tequila, lime juice, and a splash of orange liqueur.",
+        price: "$12.99",
+        image: "https://www.sainsburysmagazine.co.uk/uploads/media/720x770/08/9438-Margarita.jpg?v=1-0"
     }
 ];
 
@@ -41,7 +53,7 @@ const styles = StyleSheet.create({
         fontWeight: "600",
     },
     scrollViewContainer: {
-        height: 460,
+        height: 570,
     },
 });
 
