@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Image, ScrollView, TurboModuleRegistry } from 'react-native'
 import React from 'react'
 import { Divider } from 'react-native-elements';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 const foods = [
     {
@@ -45,16 +46,38 @@ const styles = StyleSheet.create({
 });
 
 export default function MenuItems() {
+    const [checkedItems, setCheckedItems] = React.useState([]);
+
+    const handleCheckboxToggle = (index) => {
+        const isChecked = checkedItems.includes(index);
+        setCheckedItems(
+            isChecked
+                ? checkedItems.filter((item) => item !== index)
+                : [...checkedItems, index]
+        );
+    };
+
     return (
         <View style={styles.scrollViewContainer}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 {foods.map((food, index) => (
                     <View key={index}>
                         <View style={styles.menuItemStyle}>
+                            <BouncyCheckbox
+                                isChecked={checkedItems.includes(index)}
+                                innerIconStyle={{
+                                    borderRadius: 0,
+                                    borderWidth: 0,
+                                    backgroundColor: checkedItems.includes(index) ? "green" : "#e3e3e3",
+                                }}
+                                fillColor="green"
+                                onPress={() => handleCheckboxToggle(index)}
+                            />
+
                             <FoodInformatiom food={food} />
                             <FoodImage food={food} />
                         </View>
-                        <Divider width={0.5} orientation='vertical' style={{marginHorizontal: 20}} />
+                        <Divider width={0.5} orientation="vertical" style={{ marginHorizontal: 20 }} />
                     </View>
                 ))}
             </ScrollView>
