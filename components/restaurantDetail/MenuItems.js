@@ -1,7 +1,8 @@
-import { View, Text, StyleSheet, Image, ScrollView, TurboModuleRegistry } from 'react-native'
-import React from 'react'
-import { Divider } from 'react-native-elements';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import React from "react";
+import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import { Divider } from "react-native-elements";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { useDispatch, useSelector } from "react-redux";
 
 const foods = [
     {
@@ -42,12 +43,14 @@ const foods = [
     }
 ];
 
+
 const styles = StyleSheet.create({
     menuItemStyle: {
         flexDirection: "row",
         justifyContent: "space-between",
         margin: 20,
     },
+
     titleStyle: {
         fontSize: 19,
         fontWeight: "600",
@@ -57,9 +60,10 @@ const styles = StyleSheet.create({
     },
 });
 
-export default function MenuItems() {
-    const [checkedItems, setCheckedItems] = React.useState([]);
+export default function MenuItems({ restaurantName }) {
+    const dispatch = useDispatch();
 
+    const [checkedItems, setCheckedItems] = React.useState([]);
     const handleCheckboxToggle = (index) => {
         const isChecked = checkedItems.includes(index);
         setCheckedItems(
@@ -69,6 +73,17 @@ export default function MenuItems() {
         );
     };
 
+
+    const cartItems = useSelector((state) => state.cartReducer.selectedItems.items);
+    const isFoodInCart = (food, cartItems) =>
+        Boolean(cartItems.find((item) => item.title === food.title));
+
+    const selectItem = (item, checkboxValue) =>
+        dispatch({
+            type: "ADD_TO_CART",
+            payload: { ...item, checkboxValue, restaurantName: restaurantName, checkboxValue: checkboxValue }
+        });
+
     return (
         <View style={styles.scrollViewContainer}>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -76,20 +91,27 @@ export default function MenuItems() {
                     <View key={index}>
                         <View style={styles.menuItemStyle}>
                             <BouncyCheckbox
-                                isChecked={checkedItems.includes(index)}
+                                iconStyle={{ borderColor: "lightgray", borderRadius: 0 }}
                                 innerIconStyle={{
                                     borderRadius: 0,
                                     borderWidth: 0,
                                     backgroundColor: checkedItems.includes(index) ? "green" : "#e3e3e3",
                                 }}
+                                isChecked={isFoodInCart(food, cartItems)}
+                                onPress={(checkboxValue) => {
+                                    handleCheckboxToggle(index);
+                                    selectItem(food, checkboxValue);
+                                }}
                                 fillColor="green"
-                                onPress={() => handleCheckboxToggle(index)}
                             />
-
-                            <FoodInformatiom food={food} />
-                            <FoodImage food={food} />
+                            <FoodInfo food={food} />
+                            <FoodImage food={food} marginLeft={10} />
                         </View>
-                        <Divider width={0.5} orientation="vertical" style={{ marginHorizontal: 20 }} />
+                        <Divider
+                            width={0.5}
+                            orientation="vertical"
+                            style={{ marginHorizontal: 20 }}
+                        />
                     </View>
                 ))}
             </ScrollView>
@@ -97,7 +119,7 @@ export default function MenuItems() {
     );
 }
 
-const FoodInformatiom = (props) => (
+const FoodInfo = (props) => (
     <View style={{ width: 240, justifyContent: "space-evenly" }}>
         <Text style={styles.titleStyle}>{props.food.title}</Text>
         <Text>{props.food.description}</Text>
@@ -105,11 +127,16 @@ const FoodInformatiom = (props) => (
     </View>
 );
 
-const FoodImage = (props) => (
+const FoodImage = ({ marginLeft, ...props }) => (
     <View>
         <Image
             source={{ uri: props.food.image }}
-            style={{ width: 100, height: 100, borderRadius: 8 }}
+            style={{
+                width: 100,
+                height: 100,
+                borderRadius: 8,
+                marginLeft: marginLeft,
+            }}
         />
     </View>
 );
